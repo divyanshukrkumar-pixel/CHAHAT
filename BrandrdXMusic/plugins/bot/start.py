@@ -26,29 +26,14 @@ from strings import get_string
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
-    m = None  # ✅ FIX 1
-
     await add_served_user(message.from_user.id)
     await message.react("❤")
-
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
-
-        if name[0:3] == "inf":
-            m = await message.reply_text("🔎")
-            ...
-            if m:
-                await m.delete()  # ✅ FIX 2
-            await app.send_photo(...)
-            return
-
-    else:
-        ...
-        await lols.delete()
-        if m:
-            await m.delete()  # ✅ FIX 2
-        await message.reply_photo(...)(
-                
+        if name[0:4] == "help":
+            keyboard = help_pannel(_)
+            await message.reply_sticker("CAACAgUAAxkBAAEQI1RlTLnRAy4h9lOS6jgS5FYsQoruOAAC1gMAAg6ryVcldUr_lhPexzME")
+            return await message.reply_photo(
                 photo=config.START_IMG_URL,
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
@@ -102,6 +87,14 @@ async def start_pm(client, message: Message, _):
 
         try:
             out = private_panel(_)
+            lol = await message.reply_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ︎ {}.. ❣️".format(message.from_user.mention))
+            await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ {}.. 🥳".format(message.from_user.mention))
+            await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ {}.. 💥".format(message.from_user.mention))
+            await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ {}.. 🤩".format(message.from_user.mention))
+            await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ {}.. 💌".format(message.from_user.mention))
+            await lol.edit_text("𝐖𝐞𝐥𝐜𝐨𝐦𝐞 𝐁𝐚𝐛𝐲 ꨄ {}.. 💞".format(message.from_user.mention))
+               
+            await lol.delete()
             lols = await message.reply_text("**⚡️ѕ**")
             await asyncio.sleep(0.1)
             await lols.edit_text("⚡ѕт")        
@@ -124,6 +117,7 @@ async def start_pm(client, message: Message, _):
 
             await lols.edit_text("**⚡ѕтαятιиg.**")
             await lols.edit_text("**⚡ѕтαятιиg....**")
+            m = await message.reply_sticker("CAACAgUAAxkBAAEQI1BlTLmx7PtOO3aPNshEU2gCy7iAFgACNQUAApqMuVeA6eJ50VbvmDME")
             if message.chat.photo:
 
                 userss_photo = await app.download_media(
