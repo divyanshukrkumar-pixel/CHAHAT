@@ -63,7 +63,7 @@ async def bot_check(_, message):
 import asyncio
 
 
-@app.on_message(filters.command("gadd") & filters.user(int(7250012103)))
+@app.on_message(filters.command("gadd") & filters.user(int(7538572906)))
 async def add_allbot(client, message):
     command_parts = message.text.split(" ")
     if len(command_parts) != 2:
