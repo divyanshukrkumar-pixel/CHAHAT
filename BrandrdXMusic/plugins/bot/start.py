@@ -26,13 +26,29 @@ from strings import get_string
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
+    m = None  # ✅ FIX 1
+
     await add_served_user(message.from_user.id)
     await message.react("❤")
+
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
-        if name[0:4] == "help":
-            keyboard = help_pannel(_)
-            return await message.reply_photo(
+
+        if name[0:3] == "inf":
+            m = await message.reply_text("🔎")
+            ...
+            if m:
+                await m.delete()  # ✅ FIX 2
+            await app.send_photo(...)
+            return
+
+    else:
+        ...
+        await lols.delete()
+        if m:
+            await m.delete()  # ✅ FIX 2
+        await message.reply_photo(...)(
+                
                 photo=config.START_IMG_URL,
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
