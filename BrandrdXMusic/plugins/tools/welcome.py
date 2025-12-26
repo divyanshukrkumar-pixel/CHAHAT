@@ -91,7 +91,6 @@ async def greet_group(_, member: ChatMemberUpdated):
 ๏ 𝗡ᴀᴍᴇ ➠ {user.mention}
 ๏ 𝗜ᴅ ➠ {user.id}
 ๏ 𝐔𝐒𝐄𝐑ɴᴀᴍᴇ ➠ @{user.username}
-๏ 𝐌𝐀𝐃𝐄 𝐁𝐘 ➠ [⏤͟͟͞ 𝙏𝙍𝘼𝘿𝙀𝙍 𝘽𝙊𝙔 ͟͟͞⏤](https://t.me/its_trader00)
 ➖➖➖➖➖➖➖➖➖➖➖
 """,
             reply_markup=InlineKeyboardMarkup(
