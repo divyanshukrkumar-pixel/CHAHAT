@@ -79,25 +79,24 @@ async def greet_group(_, member: ChatMemberUpdated):
         except Exception as e:
             LOGGER.error(e)
 
-    try:
-    welcomeimg = welcomepic(
-        pic,
-        user.first_name,
-        member.chat.title,
-        user.id,
-        user.username
-    )
+   try:
+       count = await app.get_chat_members_count(member.chat.id)
+       
+        welcomeimg = welcomepic(
+            pic, user.first_name, member.chat.title, user.id, user.username
+        )
+        temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
+            member.chat.id,
+            photo=welcomeimg,
+            caption=f"""
 
-    temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
-        member.chat.id,
-        photo=welcomeimg,
-        caption=f"""
 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝗧𝗼 
 {member.chat.title}
 ➖➖➖➖➖➖➖➖➖➖➖
 ๏ 𝗡ᴀᴍᴇ ➠ {user.mention}
 ๏ 𝗜ᴅ ➠ {user.id}
 ๏ 𝐔𝐒𝐄𝐑ɴᴀᴍᴇ ➠ @{user.username}
+๏ ᴛᴏᴛᴀʟ ᴍᴇᴍʙᴇʀs ➠ {count}
 ๏ 𝐌𝐀𝐃𝐄 𝐁𝐘 ➠ [⏤͟͟͞ 𝙏𝙍𝘼𝘿𝙀𝙍 𝘽𝙊𝙔 ͟͟͞⏤](https://t.me/its_trader00)
 ➖➖➖➖➖➖➖➖➖➖➖
 """,
