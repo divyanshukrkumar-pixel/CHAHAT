@@ -79,13 +79,16 @@ async def greet_group(_, member: ChatMemberUpdated):
         except Exception as e:
             LOGGER.error(e)
     try:
-        welcomeimg = welcomepic(
-            pic, user.first_name, member.chat.title, user.id, user.username
-        )
-        temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
-            member.chat.id,
-            photo=welcomeimg,
-            caption=f"""
+    count = await app.get_chat_members_count(member.chat.id)
+
+    welcomeimg = welcomepic(
+        pic, user.first_name, member.chat.title, user.id, user.username
+    )
+
+    temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
+        member.chat.id,
+        photo=welcomeimg,
+        caption=f"""
 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝗧𝗼 
 {member.chat.title}
 ➖➖➖➖➖➖➖➖➖➖➖
@@ -96,11 +99,26 @@ async def greet_group(_, member: ChatMemberUpdated):
 ๏ 𝐌𝐀𝐃𝐄 𝐁𝐘 ➠ [⏤͟͟͞ 𝙏𝙍𝘼𝘿𝙀𝙍 𝘽𝙊𝙔 ͟͟͞⏤](https://t.me/its_trader00)
 ➖➖➖➖➖➖➖➖➖➖➖
 """,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("๏ ᴠɪᴇᴡ ɴᴇᴡ ᴍᴇᴍʙᴇʀ ๏", url=f"tg://openmessage?user_id={user.id}")]
-                [InlineKeyboardButton(f"⦿ ᴀᴅᴅ ᴍᴇ ⦿", url=f"https://t.me/ChahatMusic_Bot?startgroup=true")]])
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        "๏ ᴠɪᴇᴡ ɴᴇᴡ ᴍᴇᴍʙᴇʀ ๏",
+                        url=f"tg://openmessage?user_id={user.id}"
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        "⦿ ᴀᴅᴅ ᴍᴇ ⦿",
+                        url="https://t.me/ChahatMusic_Bot?startgroup=true"
+                    )
+                ]
+            ]
         )
-    except Exception as e:
-        LOGGER.error(e)
+    )
+except Exception as e:
+    LOGGER.error(e)
+
     try:
         os.remove(f"downloads/welcome#{user.id}.png")
         os.remove(f"downloads/pp{user.id}.png")
