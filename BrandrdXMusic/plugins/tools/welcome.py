@@ -86,7 +86,8 @@ async def greet_group(_, member: ChatMemberUpdated):
             member.chat.id,
             photo=welcomeimg,
             caption=f"""
-𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝗧𝗼 {member.chat.title}
+𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝗧𝗼 
+{member.chat.title}
 ➖➖➖➖➖➖➖➖➖➖➖
 ๏ 𝗡ᴀᴍᴇ ➠ {user.mention}
 ๏ 𝗜ᴅ ➠ {user.id}
