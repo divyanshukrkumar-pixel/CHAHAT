@@ -78,11 +78,16 @@ async def greet_group(_, member: ChatMemberUpdated):
             await temp.MELCOW[f"welcome-{member.chat.id}"].delete()
         except Exception as e:
             LOGGER.error(e)
+
     try:
     count = await app.get_chat_members_count(member.chat.id)
 
     welcomeimg = welcomepic(
-        pic, user.first_name, member.chat.title, user.id, user.username
+        pic,
+        user.first_name,
+        member.chat.title,
+        user.id,
+        user.username
     )
 
     temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
