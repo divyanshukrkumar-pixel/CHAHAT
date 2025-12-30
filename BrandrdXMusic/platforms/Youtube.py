@@ -9,8 +9,8 @@ from pyrogram.enums import MessageEntityType
 from pyrogram.types import Message
 from youtubesearchpython.__future__ import VideosSearch
 
-from LOKESHXMUSIC.utils.database import is_on_off
-from LOKESHXMUSIC.utils.formatters import time_to_seconds
+from BrandrdXMusic.utils.database import is_on_off
+from BrandrdXMusic.utils.formatters import time_to_seconds
 
 
 
