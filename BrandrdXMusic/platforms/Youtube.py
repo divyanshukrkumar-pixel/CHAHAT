@@ -13,7 +13,7 @@ from BrandrdXMusic.utils.formatters import time_to_seconds
 
 # API Configuration
 API_BASE_URL = "https://youtubify.me"
-API_KEY = "773f80726ade410590c486d23db96a62"
+API_KEY = "StrangerFreeApia51330"
 
 # Streaming configuration
 ENABLE_STREAMING = True  # Enable streaming URLs for VC (no file size limit)
