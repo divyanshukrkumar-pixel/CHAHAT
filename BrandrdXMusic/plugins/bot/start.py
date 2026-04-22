@@ -33,7 +33,11 @@ NODP_PATH = BASE_DIR / "assets" / "nodp.png"
 def get_default_photo() -> str:
     if NODP_PATH.exists():
         return str(NODP_PATH)
-    return config.START_IMG_URL
+    return getattr(config, "START_IMG_URL", "")
+
+
+def get_log_chat_id():
+    return getattr(config, "LOG_GROUP_ID", None) or getattr(config, "LOGGER_ID", None)
 
 
 async def send_safe_photo(message: Message, photo: str, caption: str, reply_markup=None):
@@ -44,11 +48,44 @@ async def send_safe_photo(message: Message, photo: str, caption: str, reply_mark
             reply_markup=reply_markup,
         )
     except Exception:
-        return await message.reply_photo(
-            photo=config.START_IMG_URL,
-            caption=caption,
+        fallback = getattr(config, "START_IMG_URL", None)
+        if fallback:
+            return await message.reply_photo(
+                photo=fallback,
+                caption=caption,
+                reply_markup=reply_markup,
+            )
+        return await message.reply_text(
+            text=caption,
             reply_markup=reply_markup,
+            disable_web_page_preview=True,
         )
+
+
+async def send_start_log(message: Message):
+    log_chat_id = get_log_chat_id()
+    if not log_chat_id:
+        return
+
+    sender_id = message.from_user.id
+    sender_name = message.from_user.first_name or "Unknown"
+    sender_username = (
+        f"@{message.from_user.username}"
+        if message.from_user.username
+        else "No Username"
+    )
+
+    text = (
+        f"{message.from_user.mention} ʜᴀs sᴛᴀʀᴛᴇᴅ ʙᴏᴛ.\n\n"
+        f"<b>ᴜsᴇʀ ɪᴅ :</b> <code>{sender_id}</code>\n"
+        f"<b>ᴜsᴇʀ ɴᴀᴍᴇ :</b> {sender_name}\n"
+        f"<b>ᴜsᴇʀɴᴀᴍᴇ :</b> {sender_username}"
+    )
+
+    try:
+        await app.send_message(log_chat_id, text)
+    except Exception as e:
+        print(f"START LOG ERROR: {e}")
 
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
@@ -75,23 +112,33 @@ async def start_pm(client, message: Message, _):
 
             return await send_safe_photo(
                 message=message,
-                photo=config.START_IMG_URL,
+                photo=getattr(config, "START_IMG_URL", ""),
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
 
         if name.startswith("sud"):
             await sudoers_list(client=client, message=message, _=_)
-            if await is_on_off(2):
-                username = f"@{message.from_user.username}" if message.from_user.username else "No Username"
-                return await app.send_message(
-                    chat_id=config.LOGGER_ID,
-                    text=(
-                        f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n"
-                        f"<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n"
-                        f"<b>ᴜsᴇʀɴᴀᴍᴇ :</b> {username}"
-                    ),
-                )
+
+            try:
+                if await is_on_off(2):
+                    username = (
+                        f"@{message.from_user.username}"
+                        if message.from_user.username
+                        else "No Username"
+                    )
+                    log_chat = getattr(config, "LOGGER_ID", None) or get_log_chat_id()
+                    if log_chat:
+                        return await app.send_message(
+                            chat_id=log_chat,
+                            text=(
+                                f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n"
+                                f"<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n"
+                                f"<b>ᴜsᴇʀɴᴀᴍᴇ :</b> {username}"
+                            ),
+                        )
+            except Exception as e:
+                print(f"SUDO LOG ERROR: {e}")
             return
 
         if name.startswith("inf"):
@@ -146,16 +193,26 @@ async def start_pm(client, message: Message, _):
                         disable_web_page_preview=True,
                     )
 
-                if await is_on_off(2):
-                    username = f"@{message.from_user.username}" if message.from_user.username else "No Username"
-                    return await app.send_message(
-                        chat_id=config.LOGGER_ID,
-                        text=(
-                            f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n"
-                            f"<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n"
-                            f"<b>ᴜsᴇʀɴᴀᴍᴇ :</b> {username}"
-                        ),
-                    )
+                try:
+                    if await is_on_off(2):
+                        username = (
+                            f"@{message.from_user.username}"
+                            if message.from_user.username
+                            else "No Username"
+                        )
+                        log_chat = getattr(config, "LOGGER_ID", None) or get_log_chat_id()
+                        if log_chat:
+                            return await app.send_message(
+                                chat_id=log_chat,
+                                text=(
+                                    f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n"
+                                    f"<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n"
+                                    f"<b>ᴜsᴇʀɴᴀᴍᴇ :</b> {username}"
+                                ),
+                            )
+                except Exception as e:
+                    print(f"INFO LOG ERROR: {e}")
+
                 return
 
             except Exception:
@@ -242,20 +299,7 @@ async def start_pm(client, message: Message, _):
         reply_markup=InlineKeyboardMarkup(out),
     )
 
-    try:
-        if await is_on_off(config.LOG):
-            sender_id = message.from_user.id
-            sender_name = message.from_user.first_name
-            await app.send_message(
-                config.LOG_GROUP_ID,
-                (
-                    f"{message.from_user.mention} ʜᴀs sᴛᴀʀᴛᴇᴅ ʙᴏᴛ.\n\n"
-                    f"**ᴜsᴇʀ ɪᴅ : {sender_id}\n"
-                    f"ᴜsᴇʀ ɴᴀᴍᴇ: {sender_name}**"
-                ),
-            )
-    except Exception:
-        pass
+    await send_start_log(message)
 
 
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
@@ -266,7 +310,7 @@ async def start_gp(client, message: Message, _):
 
     await send_safe_photo(
         message=message,
-        photo=config.START_IMG_URL,
+        photo=getattr(config, "START_IMG_URL", ""),
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
     )
@@ -305,7 +349,7 @@ async def welcome(client, message: Message):
                 out = start_panel(_)
                 await send_safe_photo(
                     message=message,
-                    photo=config.START_IMG_URL,
+                    photo=getattr(config, "START_IMG_URL", ""),
                     caption=_["start_3"].format(
                         message.from_user.first_name,
                         app.mention,
